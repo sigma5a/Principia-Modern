@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0c1110">
+  <title>Principia — A Living Edition</title>
+  <style>
+    :root {
+      --ink:#17201d; --muted:#66706b; --paper:#f2eee3; --card:#faf8f0;
+      --night:#0c1110; --night-2:#131b18; --line:rgba(23,32,29,.14);
+      --green:#1e6a51; --mint:#9de2be; --gold:#d4a853; --red:#bd664e;
+      --serif:Georgia,"Times New Roman",serif; --sans:Inter,Segoe UI,Arial,sans-serif;
+      --shadow:0 24px 70px rgba(11,18,15,.12); --radius:22px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);overflow-x:hidden}
+    body.dark{--paper:#101714;--card:#17201c;--ink:#eff4ec;--muted:#9ba8a1;--line:rgba(255,255,255,.1);--shadow:0 28px 80px rgba(0,0,0,.28)}
+    button,input{font:inherit} button{cursor:pointer}
+    a{color:inherit;text-decoration:none}
+    .progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--mint),var(--gold));z-index:100;width:0}
+    nav{position:fixed;z-index:50;top:18px;left:50%;transform:translateX(-50%);width:min(1180px,calc(100% - 28px));display:flex;align-items:center;justify-content:space-between;padding:10px 12px 10px 18px;border:1px solid rgba(255,255,255,.12);border-radius:18px;background:rgba(12,17,16,.78);color:#fff;backdrop-filter:blur(16px);box-shadow:0 12px 40px rgba(0,0,0,.18)}
+    .brand{display:flex;align-items:center;gap:11px;font-weight:700;letter-spacing:.08em;font-size:.78rem;text-transform:uppercase}
+    .brand-mark{width:28px;height:28px;border:1px solid var(--gold);border-radius:50%;display:grid;place-items:center;font-family:var(--serif);color:var(--gold)}
+    .nav-links{display:flex;gap:24px;color:#bbc6c0;font-size:.82rem}.nav-links a:hover{color:white}
+    .nav-actions{display:flex;gap:8px}.icon-btn{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:white;width:38px;height:38px;border-radius:12px;display:grid;place-items:center}.icon-btn:hover{background:rgba(255,255,255,.12)}
+    .hero{min-height:100vh;background:var(--night);color:#f4f2e9;position:relative;overflow:hidden;display:grid;place-items:center;padding:130px 5vw 70px}
+    .hero:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 72% 45%,rgba(30,106,81,.23),transparent 28%),radial-gradient(circle at 15% 5%,rgba(212,168,83,.12),transparent 25%),linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);background-size:auto,auto,55px 55px,55px 55px;mask-image:linear-gradient(to bottom,black,transparent 92%)}
+    .hero-wrap{width:min(1180px,100%);display:grid;grid-template-columns:1.08fr .92fr;align-items:center;gap:64px;position:relative;z-index:2}
+    .eyebrow{display:flex;align-items:center;gap:12px;text-transform:uppercase;letter-spacing:.18em;font-size:.72rem;color:var(--mint);font-weight:700}.eyebrow:before{content:"";width:38px;height:1px;background:currentColor}
+    h1{font-family:var(--serif);font-weight:400;font-size:clamp(4rem,8vw,7.8rem);line-height:.83;letter-spacing:-.065em;margin:30px 0 32px}.hero h1 i{display:block;color:var(--gold);font-weight:400}
+    .hero-copy{max-width:610px;color:#aeb9b3;font-size:1.05rem;line-height:1.75}.hero-copy strong{color:#fff;font-weight:500}
+    .hero-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:38px}.primary,.secondary{border-radius:14px;padding:14px 20px;font-weight:700;font-size:.88rem;border:0}.primary{background:var(--mint);color:#102218}.primary:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(157,226,190,.2)}.secondary{color:#e8ece9;border:1px solid rgba(255,255,255,.18);background:transparent}
+    .edition{font-size:.72rem;color:#76837c;text-transform:uppercase;letter-spacing:.12em;margin-top:26px}
+    .orrery{aspect-ratio:1;position:relative;display:grid;place-items:center;filter:drop-shadow(0 28px 55px rgba(0,0,0,.45))}.orrery svg{width:100%;overflow:visible}.orbit-line{fill:none;stroke:rgba(255,255,255,.16);stroke-width:1}.orbit-dash{fill:none;stroke:var(--gold);stroke-width:1.5;stroke-dasharray:5 12}.planet{fill:var(--mint)}.sun{fill:var(--gold);filter:drop-shadow(0 0 16px rgba(212,168,83,.55))}.orbit-group{transform-origin:250px 250px;animation:spin 22s linear infinite}.orbit-group.fast{animation-duration:12s;animation-direction:reverse}@keyframes spin{to{transform:rotate(360deg)}}
+    .chapter-strip{background:var(--night);color:white;border-top:1px solid rgba(255,255,255,.08);display:grid;grid-template-columns:repeat(3,1fr);padding:0 5vw}.chapter-chip{padding:25px 4vw;border-right:1px solid rgba(255,255,255,.08);display:flex;gap:15px;align-items:center;color:#89958f}.chapter-chip:last-child{border:0}.chapter-chip span{font-family:var(--serif);font-size:1.8rem;color:var(--gold)}.chapter-chip b{display:block;color:#e7ede9;font-size:.78rem;text-transform:uppercase;letter-spacing:.12em}.chapter-chip small{font-size:.7rem}
+    main{position:relative}.section{padding:110px max(6vw,24px)}.wrap{width:min(1180px,100%);margin:auto}.section-head{display:grid;grid-template-columns:.75fr 1.25fr;gap:80px;align-items:end;margin-bottom:58px}.kicker{font-size:.73rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--green)}.section h2{font-family:var(--serif);font-weight:400;letter-spacing:-.04em;font-size:clamp(2.6rem,5vw,5rem);line-height:.98;margin:16px 0 0}.section-intro{font-family:var(--serif);font-size:1.15rem;line-height:1.75;color:var(--muted);max-width:620px}
+    .laws{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.law{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:30px;min-height:360px;display:flex;flex-direction:column;position:relative;overflow:hidden;transition:.3s}.law:hover{transform:translateY(-5px);box-shadow:var(--shadow);border-color:rgba(30,106,81,.28)}.law-num{font:italic 5rem/1 var(--serif);color:rgba(30,106,81,.16);position:absolute;right:22px;top:18px}.law-icon{width:58px;height:58px;border-radius:18px;background:rgba(30,106,81,.1);display:grid;place-items:center;color:var(--green);font-size:1.5rem}.law h3{font:400 1.65rem/1.15 var(--serif);margin:38px 0 14px}.law p{color:var(--muted);line-height:1.65;font-size:.92rem}.law .formula{margin-top:auto;padding-top:26px;color:var(--green);font:italic 1.25rem var(--serif)}
+    .lab{background:var(--night);color:white}.lab-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:28px}.sim-card,.control-card{background:var(--night-2);border:1px solid rgba(255,255,255,.09);border-radius:26px;overflow:hidden}.sim-top{padding:22px 24px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,.08)}.sim-top b{font-size:.8rem;letter-spacing:.1em;text-transform:uppercase}.status{font-size:.72rem;color:var(--mint);display:flex;align-items:center;gap:8px}.status:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--mint);box-shadow:0 0 10px var(--mint)}
+    canvas{display:block;width:100%;height:470px;background:radial-gradient(circle at 50% 50%,#17251f,#0c1110 70%)}
+    .control-card{padding:28px}.control-card h3{font:400 2rem var(--serif);margin:0 0 8px}.control-card>p{color:#93a19a;line-height:1.6;font-size:.9rem}.slider-group{margin:30px 0}.slider-label{display:flex;justify-content:space-between;margin-bottom:12px;font-size:.78rem;color:#aab5af}.slider-label output{color:var(--mint);font-weight:700}input[type=range]{width:100%;accent-color:var(--mint)}
+    .metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:26px}.metric{background:rgba(255,255,255,.045);padding:16px;border-radius:14px}.metric small{display:block;color:#7f8c86;text-transform:uppercase;font-size:.62rem;letter-spacing:.1em;margin-bottom:8px}.metric b{font:400 1.2rem var(--serif);color:#f4f3eb}.lab-note{color:#718078;font-size:.7rem;line-height:1.5;margin-top:18px}
+    .map-grid{display:grid;grid-template-columns:320px 1fr;gap:28px}.search-box{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;position:sticky;top:90px;height:max-content}.search-box input{width:100%;background:var(--paper);color:var(--ink);border:1px solid var(--line);padding:13px 14px;border-radius:12px;outline:0}.search-box input:focus{border-color:var(--green)}.filters{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}.filter{padding:8px 10px;border-radius:10px;border:1px solid var(--line);color:var(--muted);background:transparent;font-size:.72rem}.filter.active{background:var(--green);color:white;border-color:var(--green)}
+    .concepts{display:grid;gap:12px}.concept{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;display:grid;grid-template-columns:70px 1fr auto;gap:20px;align-items:center;transition:.25s}.concept:hover{border-color:rgba(30,106,81,.35);transform:translateX(4px)}.concept-code{font:italic 1.2rem var(--serif);color:var(--green)}.concept h3{font:400 1.22rem var(--serif);margin:0 0 7px}.concept p{color:var(--muted);margin:0;font-size:.85rem;line-height:1.5}.tag{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);border:1px solid var(--line);padding:7px 9px;border-radius:99px}.hidden{display:none!important}.no-results{text-align:center;padding:50px;color:var(--muted)}
+    .quote-section{padding:40px max(6vw,24px) 120px}.quote{width:min(1180px,100%);margin:auto;background:var(--green);color:#ecf7ef;border-radius:30px;padding:clamp(38px,7vw,80px);position:relative;overflow:hidden}.quote:after{content:"∴";position:absolute;right:5%;bottom:-30px;font:12rem var(--serif);color:rgba(255,255,255,.07)}.quote blockquote{font:400 clamp(2rem,4vw,4rem)/1.13 var(--serif);letter-spacing:-.035em;margin:0;max-width:900px}.quote cite{display:block;margin-top:32px;color:#b7d9c8;font-size:.76rem;font-style:normal;text-transform:uppercase;letter-spacing:.14em}
+    .timeline{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}.moment{padding:28px 22px;border-right:1px solid var(--line)}.moment:last-child{border:0}.year{font:400 2.2rem var(--serif);color:var(--green)}.moment h3{font:600 .9rem var(--sans);margin:14px 0 8px}.moment p{font-size:.8rem;color:var(--muted);line-height:1.55}
+    footer{background:var(--night);color:#8f9b95;padding:54px max(6vw,24px)}.footer-wrap{width:min(1180px,100%);margin:auto;display:flex;justify-content:space-between;align-items:center}.footer-title{font:400 1.3rem var(--serif);color:#eef2ed}.footer-note{font-size:.74rem;max-width:520px;line-height:1.55;text-align:right}
+    .toast{position:fixed;right:24px;bottom:24px;background:var(--ink);color:var(--paper);padding:13px 17px;border-radius:12px;box-shadow:var(--shadow);font-size:.82rem;transform:translateY(100px);opacity:0;transition:.3s;z-index:60}.toast.show{transform:translateY(0);opacity:1}
+    @media(max-width:900px){.nav-links{display:none}.hero-wrap,.section-head,.lab-grid,.map-grid{grid-template-columns:1fr}.orrery{max-width:560px;margin:auto}.laws{grid-template-columns:1fr}.law{min-height:300px}.section-head{gap:25px}.search-box{position:static}.timeline{grid-template-columns:1fr 1fr}.chapter-strip{overflow:auto}.chapter-chip{min-width:240px}.hero{padding-top:120px}.footer-wrap{display:block}.footer-note{text-align:left;margin-top:18px}}
+    @media(max-width:560px){h1{font-size:3.6rem}.hero-actions{align-items:stretch;flex-direction:column}.orrery{margin-top:20px}.chapter-strip{padding:0}.section{padding-top:80px;padding-bottom:80px}.concept{grid-template-columns:50px 1fr}.concept .tag{display:none}.metrics,.timeline{grid-template-columns:1fr}.moment{border-right:0;border-bottom:1px solid var(--line)}canvas{height:380px}.quote{border-radius:22px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.orbit-group{animation:none}.law,.concept,.primary{transition:none}}
+  </style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <nav>
+    <a class="brand" href="#top"><span class="brand-mark">N</span><span>Principia / Living Edition</span></a>
+    <div class="nav-links"><a href="edition/read.html">Full Text</a><a href="#laws">Laws</a><a href="#lab">Orbit Lab</a><a href="#concepts">Concept Map</a><a href="#legacy">Legacy</a></div>
+    <div class="nav-actions"><button class="icon-btn" id="themeBtn" aria-label="Toggle theme">◐</button><button class="icon-btn" id="motionBtn" aria-label="Pause animation">Ⅱ</button></div>
+  </nav>
+
+  <header class="hero" id="top">
+    <div class="hero-wrap">
+      <div>
+        <div class="eyebrow">Isaac Newton · 1687 / Reframed 2026</div>
+        <h1>Principia <i>Mathematica</i></h1>
+        <p class="hero-copy"><strong>The book that taught the universe to speak mathematics.</strong> Explore Newton’s architecture of motion and gravity through clear modern language, living diagrams, and hands-on experiments.</p>
+        <div class="hero-actions"><a class="primary" href="edition/read.html">Read the complete illustrated text →</a><a class="secondary" href="#laws">Explore the companion ↓</a><button class="secondary" id="randomConcept">Surprise me</button></div>
+        <div class="edition">A guided companion to <em>Philosophiæ Naturalis Principia Mathematica</em></div>
+      </div>
+      <div class="orrery" aria-label="Animated orbital diagram">
+        <svg viewBox="0 0 500 500" role="img">
+          <circle class="orbit-line" cx="250" cy="250" r="76"/><ellipse class="orbit-line" cx="250" cy="250" rx="148" ry="118"/><ellipse class="orbit-dash" cx="250" cy="250" rx="220" ry="168"/>
+          <g class="orbit-group"><circle class="planet" cx="398" cy="250" r="8"/><path d="M250 250L398 250" stroke="rgba(157,226,190,.28)"/></g>
+          <g class="orbit-group fast"><circle cx="250" cy="174" r="5" fill="#dce7e1"/><path d="M250 250L250 174" stroke="rgba(255,255,255,.16)"/></g>
+          <circle class="sun" cx="250" cy="250" r="17"/><circle cx="250" cy="250" r="30" fill="none" stroke="rgba(212,168,83,.17)"/>
+          <g fill="#cbd5d0" font-family="Georgia" font-size="10"><text x="365" y="92">equal areas</text><text x="400" y="300">elliptical path</text><text x="205" y="345">central force</text></g>
+        </svg>
+      </div>
+    </div>
+  </header>
+
+  <div class="chapter-strip">
+    <a class="chapter-chip" href="#laws"><span>I</span><div><b>Motion of bodies</b><small>Definitions & the three laws</small></div></a>
+    <a class="chapter-chip" href="#lab"><span>II</span><div><b>Motion in media</b><small>Resistance, fluids & waves</small></div></a>
+    <a class="chapter-chip" href="#legacy"><span>III</span><div><b>System of the world</b><small>Gravity on a cosmic scale</small></div></a>
+  </div>
+
+  <main>
+    <section class="section" id="laws">
+      <div class="wrap">
+        <div class="section-head"><div><div class="kicker">Book I · Axioms</div><h2>Three laws.<br>One universe.</h2></div><p class="section-intro">Newton replaced a tangle of special cases with three compact rules. Together they describe how motion persists, how forces change it, and why every push comes with a partner.</p></div>
+        <div class="laws">
+          <article class="law"><span class="law-num">I</span><div class="law-icon">→</div><h3>Inertia</h3><p>An object keeps its state of rest or uniform straight-line motion unless a net external force changes it.</p><div class="formula">ΣF = 0 ⇒ v = constant</div></article>
+          <article class="law"><span class="law-num">II</span><div class="law-icon">↗</div><h3>Force changes motion</h3><p>The net force equals the rate at which momentum changes. At constant mass, this becomes the familiar form below.</p><div class="formula">ΣF = dp/dt = ma</div></article>
+          <article class="law"><span class="law-num">III</span><div class="law-icon">⇄</div><h3>Reciprocal action</h3><p>When body A pushes body B, body B pushes A with an equal force in the opposite direction.</p><div class="formula">F₍A→B₎ = −F₍B→A₎</div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section lab" id="lab">
+      <div class="wrap">
+        <div class="section-head"><div><div class="kicker" style="color:var(--mint)">Interactive experiment</div><h2>Build an orbit.</h2></div><p class="section-intro">An orbit is a continuous fall that keeps missing the central body. Adjust the launch speed and gravity to see Newton’s cannonball thought experiment come alive.</p></div>
+        <div class="lab-grid">
+          <div class="sim-card"><div class="sim-top"><b>Orbital field / live</b><span class="status" id="orbitStatus">Stable orbit</span></div><canvas id="orbitCanvas" width="760" height="470" aria-label="Interactive orbit simulation"></canvas></div>
+          <div class="control-card">
+            <h3>Initial conditions</h3><p>The green body starts at a fixed distance. Its sideways speed and the strength of the central attraction determine the path.</p>
+            <div class="slider-group"><div class="slider-label"><span>Tangential speed</span><output id="speedOut">7.4 km/s</output></div><input id="speed" type="range" min="3" max="12" step="0.1" value="7.4"></div>
+            <div class="slider-group"><div class="slider-label"><span>Gravity strength</span><output id="gravityOut">1.00 × Earth</output></div><input id="gravity" type="range" min="0.35" max="1.8" step="0.05" value="1"></div>
+            <button class="primary" id="resetOrbit">Restart experiment</button>
+            <div class="metrics"><div class="metric"><small>Path type</small><b id="pathType">Elliptical</b></div><div class="metric"><small>Energy</small><b id="energy">Bound</b></div><div class="metric"><small>Distance</small><b id="distance">1.00 R</b></div><div class="metric"><small>Elapsed</small><b id="elapsed">0.0 h</b></div></div>
+            <p class="lab-note">This is a teaching model using scaled units, numerical integration, and an ideal two-body system.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="concepts">
+      <div class="wrap">
+        <div class="section-head"><div><div class="kicker">Concept map</div><h2>The ideas,<br>decoded.</h2></div><p class="section-intro">Search the vocabulary of the <em>Principia</em>. Each entry bridges Newton’s geometric language and the notation used in physics today.</p></div>
+        <div class="map-grid">
+          <aside class="search-box"><input id="search" type="search" placeholder="Search force, orbit, mass…" aria-label="Search concepts"><div class="filters"><button class="filter active" data-filter="all">All</button><button class="filter" data-filter="motion">Motion</button><button class="filter" data-filter="gravity">Gravity</button><button class="filter" data-filter="method">Method</button></div></aside>
+          <div class="concepts" id="conceptList">
+            <article class="concept" data-cat="motion" data-search="quantity motion momentum mass velocity"><div class="concept-code">p = mv</div><div><h3>Quantity of motion</h3><p>Newton’s term for momentum: mass multiplied by velocity, including direction.</p></div><span class="tag">Motion</span></article>
+            <article class="concept" data-cat="gravity" data-search="universal gravitation inverse square force masses distance"><div class="concept-code">F ∝ 1/r²</div><div><h3>Universal gravitation</h3><p>Every mass attracts every other mass; the force weakens with the square of distance.</p></div><span class="tag">Gravity</span></article>
+            <article class="concept" data-cat="motion" data-search="centripetal central force acceleration orbit circle"><div class="concept-code">a = v²/r</div><div><h3>Centripetal force</h3><p>An inward force bends a straight trajectory into a curved path around a center.</p></div><span class="tag">Motion</span></article>
+            <article class="concept" data-cat="method" data-search="fluxion calculus derivative change limit geometry"><div class="concept-code">ẋ</div><div><h3>Fluxions</h3><p>Newton’s language for continuously changing quantities, closely related to derivatives.</p></div><span class="tag">Method</span></article>
+            <article class="concept" data-cat="gravity" data-search="kepler equal areas time ellipse law planets"><div class="concept-code">dA/dt = c</div><div><h3>Law of areas</h3><p>A line from the Sun to a planet sweeps equal areas in equal times.</p></div><span class="tag">Gravity</span></article>
+            <article class="concept" data-cat="method" data-search="absolute relative space time frame reference"><div class="concept-code">t, x</div><div><h3>Absolute space & time</h3><p>Newton’s fixed background for motion—an idea later reshaped by relativity.</p></div><span class="tag">Method</span></article>
+            <div class="no-results hidden" id="noResults">No matching idea. Try “orbit” or “force”.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="quote-section"><div class="quote"><blockquote>“If I have seen further, it is by standing on the shoulders of giants.”</blockquote><cite>Isaac Newton · Letter to Robert Hooke, 1675</cite></div></section>
+
+    <section class="section" id="legacy">
+      <div class="wrap">
+        <div class="section-head"><div><div class="kicker">A changed cosmos</div><h2>From apple<br>to exoplanet.</h2></div><p class="section-intro">The equations gained new notation, wider reach, and relativistic corrections. The central insight remains: the same physical laws connect a falling object to the motion of worlds.</p></div>
+        <div class="timeline">
+          <article class="moment"><span class="year">1687</span><h3>Principia published</h3><p>One framework joins terrestrial motion with celestial mechanics.</p></article>
+          <article class="moment"><span class="year">1846</span><h3>Neptune predicted</h3><p>Perturbations in Uranus’s orbit point mathematicians toward an unseen planet.</p></article>
+          <article class="moment"><span class="year">1915</span><h3>Gravity becomes geometry</h3><p>Einstein’s general relativity extends Newton for intense gravity and high precision.</p></article>
+          <article class="moment"><span class="year">Today</span><h3>Navigation among worlds</h3><p>Spaceflight still begins with Newtonian mechanics, from satellites to lunar missions.</p></article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer><div class="footer-wrap"><div><div class="footer-title">Principia · A Living Edition</div><small>Designed for curious minds.</small></div><div class="footer-note">Includes the complete 1846 Andrew Motte English translation, Newton's System of the World, and the original geometric illustrations. Modern summaries and experiments are clearly separated from the historical text.</div></div></footer>
+  <div class="toast" id="toast">Concept selected</div>
+
+  <script>
+    const $ = s => document.querySelector(s);
+    const $$ = s => [...document.querySelectorAll(s)];
+    addEventListener('scroll',()=>{const h=document.documentElement;$('#progress').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%'});
+    $('#themeBtn').addEventListener('click',()=>{document.body.classList.toggle('dark');localStorage.setItem('principia-theme',document.body.classList.contains('dark')?'dark':'light')});
+    if(localStorage.getItem('principia-theme')==='dark')document.body.classList.add('dark');
+    let motion=true; $('#motionBtn').addEventListener('click',e=>{motion=!motion;e.currentTarget.textContent=motion?'Ⅱ':'▶';$$('.orbit-group').forEach(x=>x.style.animationPlayState=motion?'running':'paused');toast(motion?'Motion resumed':'Motion paused')});
+    function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>el.classList.remove('show'),1800)}
+
+    let activeFilter='all';
+    function filterConcepts(){const q=$('#search').value.toLowerCase().trim();let visible=0;$$('.concept').forEach(c=>{const show=(activeFilter==='all'||c.dataset.cat===activeFilter)&&(!q||(c.dataset.search+' '+c.innerText).toLowerCase().includes(q));c.classList.toggle('hidden',!show);visible+=show?1:0});$('#noResults').classList.toggle('hidden',visible>0)}
+    $('#search').addEventListener('input',filterConcepts);
+    $$('.filter').forEach(b=>b.addEventListener('click',()=>{$$('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');activeFilter=b.dataset.filter;filterConcepts()}));
+    $('#randomConcept').addEventListener('click',()=>{const cards=$$('.concept');const card=cards[Math.floor(Math.random()*cards.length)];location.hash='concepts';setTimeout(()=>{card.style.boxShadow='0 0 0 3px var(--gold)';card.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>card.style.boxShadow='',1800)},450)});
+
+    const canvas=$('#orbitCanvas'),ctx=canvas.getContext('2d');
+    let body,trail=[],last=0,simTime=0;
+    function resizeCanvas(){const dpr=Math.min(devicePixelRatio||1,2);const r=canvas.getBoundingClientRect();canvas.width=r.width*dpr;canvas.height=r.height*dpr;ctx.setTransform(dpr,0,0,dpr,0,0)}
+    function reset(){const w=canvas.clientWidth,h=canvas.clientHeight;body={x:w*.72,y:h*.5,vx:0,vy:-Number($('#speed').value)*.033};trail=[];simTime=0;last=performance.now()}
+    function starfield(w,h){ctx.fillStyle='rgba(255,255,255,.32)';for(let i=0;i<34;i++){const x=(i*83%997)/997*w,y=(i*151%991)/991*h;ctx.fillRect(x,y,i%7===0?1.4:.7,i%7===0?1.4:.7)}}
+    function frame(now){const w=canvas.clientWidth,h=canvas.clientHeight,cx=w/2,cy=h/2,dt=Math.min((now-last)/16.67,2);last=now;ctx.clearRect(0,0,w,h);starfield(w,h);
+      if(motion&&body){const dx=cx-body.x,dy=cy-body.y,r=Math.max(Math.hypot(dx,dy),18),g=Number($('#gravity').value)*.56;body.vx+=g*dx/(r*r/100)*dt;body.vy+=g*dy/(r*r/100)*dt;body.x+=body.vx*dt;body.y+=body.vy*dt;trail.push([body.x,body.y]);if(trail.length>520)trail.shift();simTime+=dt*.045;if(r<30||body.x<-60||body.x>w+60||body.y<-60||body.y>h+60)setTimeout(reset,250)}
+      ctx.beginPath();trail.forEach((p,i)=>i?ctx.lineTo(...p):ctx.moveTo(...p));ctx.strokeStyle='rgba(157,226,190,.48)';ctx.lineWidth=1.4;ctx.stroke();
+      const glow=ctx.createRadialGradient(cx,cy,2,cx,cy,42);glow.addColorStop(0,'#f6d47f');glow.addColorStop(.25,'#d4a853');glow.addColorStop(1,'rgba(212,168,83,0)');ctx.fillStyle=glow;ctx.beginPath();ctx.arc(cx,cy,42,0,Math.PI*2);ctx.fill();ctx.fillStyle='#f2c665';ctx.beginPath();ctx.arc(cx,cy,11,0,Math.PI*2);ctx.fill();
+      if(body){ctx.shadowBlur=14;ctx.shadowColor='#9de2be';ctx.fillStyle='#9de2be';ctx.beginPath();ctx.arc(body.x,body.y,6,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;const r=Math.hypot(cx-body.x,cy-body.y);$('#distance').textContent=(r/(w*.22)).toFixed(2)+' R';$('#elapsed').textContent=simTime.toFixed(1)+' h'}requestAnimationFrame(frame)}
+    function updateLabels(){const s=Number($('#speed').value),g=Number($('#gravity').value);$('#speedOut').textContent=s.toFixed(1)+' km/s';$('#gravityOut').textContent=g.toFixed(2)+' × Earth';const ratio=s/Math.sqrt(g);let type='Elliptical',energy='Bound',status='Stable orbit';if(ratio<5.3){type='Collision';energy='Falling';status='Suborbital path'}else if(ratio>9.2){type='Escape';energy='Unbound';status='Escape trajectory'}else if(ratio>6.7&&ratio<8.1){type='Near-circular';status='Stable orbit'}$('#pathType').textContent=type;$('#energy').textContent=energy;$('#orbitStatus').textContent=status;reset()}
+    $('#speed').addEventListener('input',updateLabels);$('#gravity').addEventListener('input',updateLabels);$('#resetOrbit').addEventListener('click',()=>{reset();toast('Experiment restarted')});
+    addEventListener('resize',()=>{resizeCanvas();reset()});resizeCanvas();updateLabels();requestAnimationFrame(t=>{last=t;requestAnimationFrame(frame)});
+  </script>
+</body>
+</html>
